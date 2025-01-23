@@ -8,6 +8,7 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import sessionmaker, declarative_base
 from database_models import DatabaseMetaData
+from language_models import EmbeddingModel
 
 chat_model = Llama(
    model_path="../models/Phi-3-mini-128k-instruct.Q6_K.gguf",
@@ -19,34 +20,21 @@ chat_model = Llama(
    temperature=0    
 )
  
-embed_model=Llama(
-  model_path='../models/bge-small-en-v1.5-q4_k_m.gguf',
-  embedding=True,
-  verbose=False,
-  pooling_type=LLAMA_POOLING_TYPE_LAST
-)
+user_query="Can you show all album titles by artist Capleton release on label Jet Star?"
 
-user_query="Can you show all albums by artist Capleton release on label Jet Star?"
-query_embeddings=embed_model.embed(user_query, normalize=True)
+embed_model=EmbeddingModel()
+query_embeddings=embed_model.embed(user_query)
 
-# <-> Eucludian distance
-# <=> Cosine Similarity ex. sikit learn cosine_similarity
-# <#> Inner product ex. numpy dot
-cosine_similarity_sql=text(f"SELECT table_json_schema, 1-(vector_embeddings <=> '{query_embeddings}') as cosine_similarity \
-    FROM database_meta_data \
-        ORDER BY cosine_similarity DESC \
-            LIMIT 3;")
 try:
     connection_string=os.environ.get('DATABASE_URL')
-    engine = create_engine(connection_string, connect_args={'options': '-csearch_path=music'})
+    engine = create_engine(connection_string, connect_args={'options': '-csearch_path=music'},echo=True)
     Session = sessionmaker(engine)
 
     with engine.connect() as conn:
         with Session(bind=conn) as session:
-            metaDbTable=DatabaseMetaData()
-            # select_stmt=select(metaDbTable.table_json_schema).order_by(metaDbTable.vector_embeddings.l2_distance(query_embeddings)).limit(3)
-            result=session.execute(cosine_similarity_sql).fetchall()
-            most_similar_documents=[item[0] for item in result]
+            select_statement=select(DatabaseMetaData).order_by(DatabaseMetaData.vector_embeddings.cosine_distance(query_embeddings)).limit(4)
+            result=session.scalars(select_statement).all()
+            most_similar_documents=[item for item in result]
             
 except (Exception, psycopg.DatabaseError) as error:
 	print('ERROR: ',error)
@@ -54,10 +42,8 @@ except (Exception, psycopg.DatabaseError) as error:
 
 context = ""
 for _, document in enumerate(most_similar_documents):
-	wrapped_text=textwrap.fill(document,width=100)
+	wrapped_text=textwrap.fill(document.table_json_schema,width=100)
 	context += wrapped_text
-
-print(context)
 
 prompt_template=f"""
 <|system|>
@@ -77,6 +63,6 @@ Question: {user_query}<|end|>
 <|assistant|>
 """
 
-output=chat_model(prompt_template, max_tokens=2048)
-sql_query=output["choices"][0]["text"].strip().replace('```sql', '').replace('```', '')
+output=chat_model(prompt_template, max_tokens=2048, echo=True)
+sql_query=output["choices"][0]["text"].strip()
 print(sql_query)

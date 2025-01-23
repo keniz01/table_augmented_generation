@@ -27,7 +27,7 @@ def save_embeddings(get_meta_data_schema_sql):
                 rows=[]
                 conn=engine.connect()
                 df = pd.read_sql_query(con=conn, sql=get_meta_data_schema_sql())
-                documents=df['table_schema_json'].to_list()
+                documents=df['table_json_schema'].to_list()
                 embed_model=embed_model
                 
                 for document in documents:
