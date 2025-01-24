@@ -13,3 +13,20 @@ class EmbeddingModel():
     def embed(self, content):
         vector=self.__embed_model.embed(content, normalize=True)
         return vector
+    
+class InstructionModel():
+    def __init__(self):
+        self.model = Llama(
+            model_path="../models/Phi-3-mini-128k-instruct.Q6_K.gguf",
+            n_ctx=2048,
+            verbose=False,
+            n_gpu_layers=0,
+            logits_all=True,
+            chat_format="chatml",
+            temperature=0    
+        )
+    
+    def generate_response(self, prompt):
+        completeion_response=self.model(prompt, max_tokens=2048)
+        sql_response=completeion_response["choices"][0]["text"].strip()
+        return sql_response
