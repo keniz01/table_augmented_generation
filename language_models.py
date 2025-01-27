@@ -17,7 +17,7 @@ class EmbeddingModel():
 class InstructionModel():
     def __init__(self):
         self.model = Llama(
-            model_path="../models/Phi-3-mini-128k-instruct.Q6_K.gguf",
+            model_path="../models/Phi-3.5-mini-instruct-Q6_K_L.gguf",
             n_ctx=2048,
             verbose=False,
             n_gpu_layers=0,
@@ -26,7 +26,7 @@ class InstructionModel():
             temperature=0    
         )
     
-    def generate_response(self, prompt):
-        completeion_response=self.model(prompt, max_tokens=2048)
-        sql_response=completeion_response["choices"][0]["text"].strip()
+    def generate_response(self, prompt:str):
+        completion_response=self.model(prompt, max_tokens=2048)
+        sql_response=completion_response["choices"][0]["text"].strip().replace('```sql','').replace('```','')
         return sql_response

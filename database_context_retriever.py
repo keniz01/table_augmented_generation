@@ -15,7 +15,7 @@ class DatabaseContextRetriever:
         try:
             query_embeddings=cls._embed_model.embed(question)
             connection_string=os.environ.get('DATABASE_URL')
-            engine = create_engine(connection_string, connect_args={'options': '-csearch_path=music'},echo=True)
+            engine = create_engine(connection_string, connect_args={'options': '-csearch_path=music'})
             Session = sessionmaker(engine)
 
             with engine.connect() as conn:
