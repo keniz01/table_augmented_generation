@@ -4,7 +4,7 @@ class EmbeddingModel():
     
     def __init__(self):
         self.__embed_model=Llama(
-            model_path='../models/bge-small-en-v1.5-q4_k_m.gguf',
+            model_path='../../models/bge-small-en-v1.5-q4_k_m.gguf',
             embedding=True,
             verbose=False,
             pooling_type=LLAMA_POOLING_TYPE_LAST
@@ -17,7 +17,7 @@ class EmbeddingModel():
 class InstructionModel():
     def __init__(self):
         self.model = Llama(
-            model_path="../models/Phi-3.5-mini-instruct-Q6_K_L.gguf",
+            model_path="../../models/Phi-3.5-mini-instruct-Q6_K_L.gguf",
             n_ctx=2048,
             verbose=False,
             n_gpu_layers=0,
