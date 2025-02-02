@@ -31,6 +31,6 @@ class DatabaseContextRetriever:
     def __get_question_metadata_context(metadata: list[DatabaseMetaData]) ->str:
         context = ""
         for _, document in enumerate(metadata):
-            wrapped_text=textwrap.fill(document.table_json_schema,width=100)
+            wrapped_text=textwrap.fill(document.table_meta_data,width=100)
             context += wrapped_text
         return context

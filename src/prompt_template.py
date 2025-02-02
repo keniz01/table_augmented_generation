@@ -1,11 +1,15 @@
 class PromptTemplate:
 
-    _prompt_template="""
-    <|system|>{instructions}<|end|>
-    <|user|>
-    Context:{context}
-    Question: {question}<|end|>
-    <|assistant|>"""
+    _prompt_template="""<|system|>
+{instructions}
+<|end|>
+<|user|>
+Context:
+{context}
+Question: 
+{question}
+<|end|>
+<|assistant|>"""
     
     @classmethod
     def from_template(cls, instructions:str, context:str, question:str) -> str:

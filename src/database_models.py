@@ -12,5 +12,5 @@ class DatabaseMetaData(Base):
     table_schema_id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     table_name = Column(String(255), nullable=False)
     table_description = Column(String(255), nullable=False)
-    table_json_schema = Column(JSONB, nullable=False)
+    table_meta_data = Column(JSONB, nullable=False)
     vector_embeddings = Column(Vector(384), nullable=False)

@@ -20,15 +20,39 @@ class InstructionModel():
     def __init__(self):
         self.model = Llama(
             model_path=f"{model_path}//models/Phi-3.5-mini-instruct-Q6_K_L.gguf",
-            n_ctx=2048,
+            n_ctx=2500,
             verbose=False,
-            n_gpu_layers=0,
-            logits_all=True,
-            chat_format="chatml",
             temperature=0    
         )
     
     def generate_response(self, prompt:str):
         completion_response=self.model(prompt, max_tokens=2048)
-        sql_response=completion_response["choices"][0]["text"].strip().replace('```sql','').replace('```','')
-        return sql_response
+        formatter=SQLResponseFormatter(completion_response["choices"][0]["text"]).remove_spaces().remove_back_ticks().remove_wild_cards().replace_equal_with_ilike()
+        return formatter.sql_response
+    
+class SQLResponseFormatter():
+
+    def __init__(self, sql_response: str):
+        self.sql_response=sql_response
+
+    def remove_spaces(self):
+        self.sql_response=self.sql_response.strip()
+        return self
+
+    def remove_back_ticks(self):
+        self.sql_response=self.sql_response.replace('```sql','').replace('```','')
+        return self
+    
+    def remove_wild_cards(self):
+        self.sql_response=self.sql_response.replace("%",'')
+        return self
+    
+    def replace_equal_with_ilike(self):
+        if "WHERE" in self.sql_response:
+            index=self.sql_response.index("WHERE")
+            query_length=len(self.sql_response)
+            replacement=self.sql_response[index:query_length].replace("=","ILIKE")
+            self.sql_response=self.sql_response[:index] + replacement
+            return self
+        
+        return self

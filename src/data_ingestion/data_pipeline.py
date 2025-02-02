@@ -1,22 +1,23 @@
 import os
 import sys
-sys.path.append(os.getcwd())
-from llama_cpp import LLAMA_POOLING_TYPE_LAST, Llama
 import pandas as pd
 import psycopg
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-import json
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(SCRIPT_DIR))
+
 from database_models import DatabaseMetaData
 from language_models import EmbeddingModel
 
 # Database folder
 def get_meta_data_schema_sql() -> str:
-    with open('database_schema_json.sql') as file:
+    with open(f'{SCRIPT_DIR}/sql/database_schema.sql') as file:
         return file.read()
 
 def save_embeddings(get_meta_data_schema_sql):
-    embed_model=EmbeddingModel().embed_model
+    embed_model=EmbeddingModel()
     try:
         connection_string=os.environ.get('DATABASE_URL')
         engine = create_engine(connection_string, connect_args={'options': '-csearch_path=music'})
@@ -27,18 +28,21 @@ def save_embeddings(get_meta_data_schema_sql):
                 rows=[]
                 conn=engine.connect()
                 df = pd.read_sql_query(con=conn, sql=get_meta_data_schema_sql())
-                documents=df['table_json_schema'].to_list()
-                embed_model=embed_model
-                
-                for document in documents:
-                    row=DatabaseMetaData(
-                        table_name=document["table_name"], 
-                        table_description=document["table_description"],
-                        table_json_schema=json.dumps(document), 
-                        vector_embeddings=embed_model.embed(json.dumps(document), normalize=True)
-                    )
-                    rows.append(row)   
 
+                table_names=df["table_name"].unique()
+
+                for table_name in table_names:
+                    documents=df[df['table_name'] == table_name]
+                    csv=documents.to_csv(index=False, header=False)
+
+                    row=DatabaseMetaData(
+                        table_name=table_name, 
+                        table_description=df["table_description"][0],
+                        table_meta_data=csv, 
+                        vector_embeddings=embed_model.embed(csv)
+                    )
+                    rows.append(row)
+                print(rows)
                 save_many(session, rows)
     except (Exception, psycopg.DatabaseError) as error:
      print('ERROR: ',error)
