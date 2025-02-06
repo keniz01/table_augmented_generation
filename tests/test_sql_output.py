@@ -45,18 +45,19 @@ try:
 
     sql_prompt=SqlPrompt()
     prompt=sql_prompt.generate_prompt(context=table_schema, question=question)
-    instruction_model=InstructionModel()
-    sql_statement=instruction_model.generate_response(prompt=prompt)
+    print(prompt)
+    # instruction_model=InstructionModel()
+    # sql_statement=instruction_model.generate_response(prompt=prompt)
 
-    print(sql_statement)
+    # print(sql_statement)
 
-    df=pd.read_sql(sql_statement,engine)
-    context=df.to_markdown(tablefmt="grid", index=False)
+    # df=pd.read_sql(sql_statement,engine)
+    # context=df.to_markdown(tablefmt="grid", index=False)
 
-    end_time=strftime("%H:%M:%S", localtime())
-    print(f"Response: {start_time} to {end_time}")
+    # end_time=strftime("%H:%M:%S", localtime())
+    # print(f"Response: {start_time} to {end_time}")
 
-    print(context)
+    # print(context)
 
 except (Exception, psycopg.DatabaseError) as error:
 	print('ERROR: ',error)
