@@ -1,0 +1,63 @@
+{
+    "table_schema": "music",
+    "table_name": "album",
+    "table_description": "The album table maintains the album data",
+    "columns": [
+        {
+            "column_name": "album_id",
+            "column_data_type": "integer",
+            "is_column_nullable": "NO",
+            "column_description": "The album_id column contains the primary key for the album table",
+            "column_constraint_type": "PRIMARY KEY"
+        },
+        {
+            "column_name": "artist_id",
+            "column_data_type": "integer",
+            "is_column_nullable": "YES",
+            "column_description": "The artist_id column maintains a reference to the artist.artist_id column",
+            "column_constraint_type": "FOREIGN KEY"
+        },
+        {
+            "column_name": "duration",
+            "column_data_type": "character varying",
+            "is_column_nullable": "YES",
+            "column_description": "The duration column contains the time it takes an album to complete playing",
+            "column_constraint_type": null
+        },
+        {
+            "column_name": "genre_id",
+            "column_data_type": "integer",
+            "is_column_nullable": "YES",
+            "column_description": "The genre_id column maintains a reference to the genre.genre_id column",
+            "column_constraint_type": "FOREIGN KEY"
+        },
+        {
+            "column_name": "label_id",
+            "column_data_type": "integer",
+            "is_column_nullable": "YES",
+            "column_description": "The label_id column maintains a reference to the record_label.label_id column",
+            "column_constraint_type": "FOREIGN KEY"
+        },
+        {
+            "column_name": "release_year",
+            "column_data_type": "integer",
+            "is_column_nullable": "YES",
+            "column_description": "The release_year column contains the year the album was released",
+            "column_constraint_type": null
+        },
+        {
+            "column_name": "title",
+            "column_data_type": "character varying",
+            "is_column_nullable": "YES",
+            "column_description": "The title column contains the name of the album",
+            "column_constraint_type": null
+        },
+        {
+            "column_name": "total_tracks",
+            "column_data_type": "integer",
+            "is_column_nullable": "YES",
+            "column_description": "The total_tracks column contains number of tracks on the album",
+            "column_constraint_type": null
+        }
+    ]
+}
