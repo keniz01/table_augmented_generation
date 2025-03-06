@@ -1,14 +1,9 @@
 class PromptTemplate:
 
-    _prompt_template="""<|system|>
-{instructions}
-<|end|>
+    _prompt_template="""<|system|>{instructions}<|end|>
 <|user|>
-Context:
 {context}
-Question: 
-{question}
-<|end|>
+Question: {question}<|end|>
 <|assistant|>"""
     
     @classmethod

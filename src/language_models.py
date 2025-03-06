@@ -1,4 +1,5 @@
 from os import path
+import re
 from llama_cpp import LLAMA_POOLING_TYPE_LAST, Llama
 
 model_path=path.abspath(path.join(__file__ ,"../../.."))
@@ -24,10 +25,16 @@ class InstructionModel():
             verbose=False,
             temperature=0    
         )
-    
-    def generate_response(self, prompt:str):
+
+    def generate_summary_response(self, prompt:str):
         completion_response=self.model(prompt, max_tokens=2048)
-        formatter=SQLResponseFormatter(completion_response["choices"][0]["text"]).remove_spaces().remove_back_ticks().remove_wild_cards().replace_equal_with_ilike()
+        response_text=completion_response["choices"][0]["text"]
+        return response_text
+       
+    def generate_sql_response(self, prompt:str):
+        completion_response=self.model(prompt, max_tokens=2048)
+        sql_text=completion_response["choices"][0]["text"]
+        formatter=SQLResponseFormatter(sql_text).remove_spaces().remove_back_ticks().remove_wild_cards().replace_equals_with_ilike()
         return formatter.sql_response
     
 class SQLResponseFormatter():
@@ -47,12 +54,7 @@ class SQLResponseFormatter():
         self.sql_response=self.sql_response.replace("%",'')
         return self
     
-    def replace_equal_with_ilike(self):
-        if "WHERE" in self.sql_response:
-            index=self.sql_response.index("WHERE")
-            query_length=len(self.sql_response)
-            replacement=self.sql_response[index:query_length].replace("=","ILIKE")
-            self.sql_response=self.sql_response[:index] + replacement
-            return self
-        
+    def replace_equals_with_ilike(self):
+        pattern = r"=\s*'([^']*)'"
+        self.sql_response = re.sub(pattern, r" ILIKE '\1'", self.sql_response)       
         return self

@@ -13,12 +13,31 @@ class SqlPrompt(AbstractPrompt):
         super().__init__()
 
     def generate_prompt(self, context:str, question: str) -> str:
-        
-        instructions="""You are a PostgreSQL expert. Given an input question, first create a syntactically correct PostgreSQL query to run, then look at the results of the query and return the answer to the question.
-Unless the user specifies in the question a specific number of examples to obtain, query for at most 15 results using the LIMIT clause as per PostgreSQL. You can order the results to return the most informative data in the database.
-Never query for all columns from a table. You must query only the columns that are needed to answer the question. You must use column name aliases and must each column name in double quotes (") to denote them as delimited identifiers.
-Pay attention to use only the column names you can see in the tables below. Be careful to not query for columns that do not exist. Also, pay attention to which column is in which table.
-Only return SQL response - the response must not include any advice, comments, assumptions or sequence of steps."""
-
-        prompt=PromptTemplate.from_template(instructions=instructions, context=context, question=question)
-        return prompt
+        return f"""<|system|>You must use the context to generate a correct Postgres SQL statement to answer the question at the end.
+Strictly only use table and column names defined in the context and ayou must use both table and column aliases.
+If the question does not make sense or you dont know the answer just say "I dont know".
+You must only return valid SQL - do not return explanations, advice or assumptions.<|end|>
+<|user|>
+Count albums distributed by record label 'Greenesleeves'<|end|>
+<|assistant|>
+select count(a.*) album_count 
+from album a 
+inner join record_label rl on rl.label_id = a.label_id 
+where rl.label_name ILIKE 'Greensleeves Records';<|end|>
+<|user|>
+How many albums does the recording artist 'Gregory Isaacs' have?<|end|>
+<|assistant|>
+SELECT COUNT(al.*) 
+FROM album al;<|end|>
+<|user|>
+Show all tracks on the album 'Soca Xplosion 2007' have?<|end|>
+<|assistant|>
+SELECT tr.track_id, tr.title, tr.duration, tr.position, tr.release_year, tr.genre_id, tr.label_id, tr.artist_id, tr.album_id 
+FROM track tr
+INNER JOIN album al on al.album_id=tr.album_id 
+WHERE al.title ILIKE 'Soca Xplosion';<|end|>
+<|user|>
+Context: {context}
+Question: {question}
+<|end|>
+<|assistant|>"""
