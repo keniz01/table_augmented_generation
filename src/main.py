@@ -3,8 +3,6 @@ import re
 from time import localtime, strftime
 import psycopg
 from psycopg.rows import dict_row
-import pandas as pd
-import sqlalchemy as db
 from language_models import InstructionModel
 from summarizer_prompt import SummarizerPrompt
 from sql_prompt import SqlPrompt
@@ -22,7 +20,6 @@ def replace_equals_with_ilike(sql_query):
 # question="How many albums are released by record label 'Jet star'?"
 # question = "How many tracks are on album '2006 Ragga' and what is the album genre name?"
 # question='Show all track titles on the album Party Alliance Vol 3-Retail CD'
-# question="Can you show all album titles by artist Sizzla released on label Jet Star?"
 question="Which genres does artist 'Buju Banton' appear in?"
 
 start_time=strftime("%H:%M:%S", localtime())
@@ -35,9 +32,6 @@ sql_statement=instruction_model.generate_sql_response(prompt=prompt)
 
 try:
     connection_string=os.environ.get('DATABASE_URL')
-    # engine = db.create_engine(connection_string, connect_args={'options': '-csearch_path=music'})
-    # df=pd.read_sql(sql_statement,engine)
-    # context=df.to_markdown(tablefmt="grid", index=False)
     conn = psycopg.connect(conninfo=connection_string, row_factory=dict_row)
     cursor = conn.cursor()
     cursor.execute('SET SESSION search_path=music') 

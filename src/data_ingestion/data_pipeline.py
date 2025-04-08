@@ -42,11 +42,10 @@ def save_embeddings(get_meta_data_schema_sql):
                         vector_embeddings=embed_model.embed(csv)
                     )
                     rows.append(row)
-                print(rows)
                 save_many(session, rows)
     except (Exception, psycopg.DatabaseError) as error:
-     print('ERROR: ',error)
-     raise Exception(f"Failed to create vector embeddings: {error}") from error
+        print('ERROR: ',error)
+        raise Exception(f"Failed to create vector embeddings: {error}") from error
 
 def save_many(session, rows):
     session.add_all(rows)         

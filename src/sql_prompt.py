@@ -14,9 +14,9 @@ class SqlPrompt(AbstractPrompt):
 
     def generate_prompt(self, context:str, question: str) -> str:
         return f"""<|system|>You must use the context to generate a correct Postgres SQL statement to answer the question at the end.
-Strictly only use table and column names defined in the context and ayou must use both table and column aliases.
+Strictly only use table and column names defined in the context and you must use table and column aliases.
 If the question does not make sense or you dont know the answer just say "I dont know".
-You must only return valid SQL - do not return explanations, advice or assumptions.<|end|>
+You must only return valid SQL - do not explain, advice or assume.<|end|>
 <|user|>
 Count albums distributed by record label 'Greenesleeves'<|end|>
 <|assistant|>

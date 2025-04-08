@@ -14,3 +14,10 @@ class DatabaseMetaData(Base):
     table_description = Column(String(255), nullable=False)
     table_meta_data = Column(JSONB, nullable=False)
     vector_embeddings = Column(Vector(384), nullable=False)
+
+class VectorEmbeddings(Base):
+    __tablename__ = 'vector_embeddings'
+
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    raw_json = Column(JSONB, nullable=False)
+    embeddings = Column(Vector(384), nullable=False)

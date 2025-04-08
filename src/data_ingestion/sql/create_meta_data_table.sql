@@ -21,3 +21,22 @@ COMMENT ON COLUMN music.database_meta_data.table_name IS 'The table name';
 COMMENT ON COLUMN music.database_meta_data.table_description IS 'The table description';
 COMMENT ON COLUMN music.database_meta_data.table_meta_data IS 'The table metadata';
 COMMENT ON COLUMN music.database_meta_data.vector_embeddings IS 'The table schema json string embeddings';
+
+-----
+-- DROP TABLE music.vector_embeddings;
+CREATE TABLE music.vector_embeddings (
+	id int4 GENERATED ALWAYS AS IDENTITY NOT NULL, -- Table id
+	raw_json varchar NOT NULL, -- The json string
+	embeddings music.vector(384) NOT NULL, -- The table embeddings
+	CONSTRAINT vector_embeddings_pk PRIMARY KEY (id),
+	CONSTRAINT embeddings_unique UNIQUE (embeddings)
+);
+
+-- Column comments
+COMMENT ON TABLE music.vector_embeddings IS 'Table stores music table augmented generation embeddings';
+
+-- Column comments
+
+COMMENT ON COLUMN music.vector_embeddings.id IS 'Table identification column';
+COMMENT ON COLUMN music.vector_embeddings.raw_json IS 'The database metadata data in json format';
+COMMENT ON COLUMN music.vector_embeddings.embeddings IS 'The embeddings for the database metadata in json format';
