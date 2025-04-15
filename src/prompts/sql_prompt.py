@@ -1,11 +1,10 @@
 from os import path
 import sys
 
+from prompts.prompt_base import AbstractPrompt
+
 SCRIPT_DIR = path.dirname(path.abspath(__file__))
 sys.path.append(path.dirname(SCRIPT_DIR))
-
-from src.prompt_base import AbstractPrompt
-from src.prompt_template import PromptTemplate
       
 class SqlPrompt(AbstractPrompt):
 

@@ -1,5 +1,5 @@
-from prompt_template import PromptTemplate
-from prompt_base import AbstractPrompt
+
+from prompts.prompt_base import AbstractPrompt
 
 class SummarizerPrompt(AbstractPrompt):
 
@@ -13,5 +13,4 @@ Context: {context}
 <|user|>You must summarize the values in the context regardless of the question.<|end|>
 <|assistant|>"""
 
-        # prompt=PromptTemplate.from_template(instructions=instructions, context=context, question=question)
         return prompt

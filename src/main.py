@@ -1,17 +1,11 @@
-import os
-import re
 from time import localtime, strftime
-import psycopg
-from psycopg.rows import dict_row
-from language_models import InstructionModel
-from summarizer_prompt import SummarizerPrompt
-from sql_prompt import SqlPrompt
-from database_context_retriever import DatabaseContextRetriever
 
-def replace_equals_with_ilike(sql_query):
-    pattern = r"=\s*'([^']*)'"
-    modified_query = re.sub(pattern, r" ILIKE '\1'", sql_query)
-    return modified_query
+from ContextRetrieverAgent import ContextRetrieverAgent
+from LLMSQLGeneratorAgent import LLMSQLGeneratorAgent
+from LLMTextSummeriserAgent import LLMTextSummeriserAgent
+from SQLExecutorAgent import SQLExecutorAgent
+from prompts.sql_prompt import SqlPrompt
+from prompts.summarizer_prompt import SummarizerPrompt
 
 # question="Which album titles have the track title 'Pull up' and which recording artist released each of them?"
 # question="Which album title has the track title 'Pull up' and which recording artist released it?"
@@ -23,28 +17,20 @@ def replace_equals_with_ilike(sql_query):
 question="Which genres does artist 'Buju Banton' appear in?"
 
 start_time=strftime("%H:%M:%S", localtime())
-database_schema_context=DatabaseContextRetriever.from_question(question=question)
+database_schema_context=ContextRetrieverAgent.from_question(question=question)
 
 sql_prompt=SqlPrompt()
 prompt=sql_prompt.generate_prompt(context=database_schema_context, question=question)
-instruction_model=InstructionModel()
-sql_statement=instruction_model.generate_sql_response(prompt=prompt)
+sql_generator=LLMSQLGeneratorAgent()
+sql_statement=sql_generator.generate_sql(prompt=prompt)
 
-try:
-    connection_string=os.environ.get('DATABASE_URL')
-    conn = psycopg.connect(conninfo=connection_string, row_factory=dict_row)
-    cursor = conn.cursor()
-    cursor.execute('SET SESSION search_path=music') 
-    modified_sql = replace_equals_with_ilike(sql_statement)
-    cursor.execute(modified_sql)
-    sql_response_context = cursor.fetchall()  
-except (Exception, psycopg.DatabaseError) as error:
-	print('ERROR: ',error)
-	raise error
+sql_executor = SQLExecutorAgent()
+sql_response_context=sql_executor.execute_sql(sql_statement)
 
 summarizer_prompt=SummarizerPrompt()
 prompt=summarizer_prompt.generate_prompt(context=sql_response_context, question=question)
-response=instruction_model.generate_summary_response(prompt=prompt)
+llm_summeriser=LLMTextSummeriserAgent()
+response=llm_summeriser.summerise_text(prompt=prompt)
 end_time=strftime("%H:%M:%S", localtime())
 print(f"Response: {start_time} to {end_time}")
 print(response)

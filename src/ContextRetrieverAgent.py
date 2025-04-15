@@ -1,9 +1,10 @@
 import os
 import psycopg
-from language_models import EmbeddingModel
 from psycopg.rows import dict_row
 
-class DatabaseContextRetriever:
+from llm_models.EmbeddingModel import EmbeddingModel
+
+class ContextRetrieverAgent:
 
     _embed_model=EmbeddingModel()
 
@@ -26,4 +27,4 @@ LIMIT 5;"""
                 return [row['raw_json'] for row in rows]   
         except (Exception, psycopg.DatabaseError) as error:
             print('ERROR: ',error)
-            raise Exception(f"Failed to retrieve similar metadata: {error}") from error
+            raise Exception(f"Failed to get context: {error}") from error
