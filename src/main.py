@@ -37,23 +37,24 @@ def summarise_sql_result_text(sql_result_text: str, question: str) -> str:
 def run_agent(question: str) -> str:
     db_schema_context=get_db_schema_context(question)
     sql=get_sql_from_llm(db_schema_context, question)
+    print("SQL: ", sql)
     sql_result_text=execute_sql(sql)
-    db_utils.close()
     summary_text=summarise_sql_result_text(sql_result_text, question)
     return summary_text
 
 if __name__ == "__main__":
-    question="Which album titles have the track title 'Pull up' and which recording artist released each of them?"
-    # question="Which album title has the track title 'Pull up' and which recording artist released it?"
-    # question='Show all track titles on the album Party Alliance Vol 3-Retail CD'
-    # question="Can you show all album titles by artist Sizzla released on label Jet Star?"
-    # question="How many albums are released by record label 'Jet star'?"
-    # question = "How many tracks are on album '2006 Ragga' and what is the album genre name?"
-    # question='Show all track titles on the album Party Alliance Vol 3-Retail CD'
-    # question="Which genres does artist 'Buju Banton' appear in?"
 
-    start_time=strftime("%H:%M:%S", localtime())
-    response=run_agent(question)
-    end_time=strftime("%H:%M:%S", localtime())
-    print(f"Response: {start_time} to {end_time}")
-    print(response)
+    while True:
+        try:
+            user_input = input("User: ")
+
+            if user_input == "exit":
+                break
+
+            start_time=strftime("%H:%M:%S", localtime())
+            response=run_agent(user_input)
+            end_time=strftime("%H:%M:%S", localtime())
+            print(f"Response Time: {start_time} to {end_time}")
+            print("AI: " + response)
+        except (Exception) as error:
+            print('ERROR: ',error)
