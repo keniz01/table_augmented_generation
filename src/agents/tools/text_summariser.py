@@ -1,8 +1,8 @@
-from llama_cpp import Llama
+from src.llm_models.instruction_model import InstructionModel
 
 class TextSummariser:
 
-    def __init__(self, llm_model: Llama):
+    def __init__(self, llm_model: InstructionModel):
         self.__llm_model=llm_model
 
     def summarise_text(self, prompt:str):

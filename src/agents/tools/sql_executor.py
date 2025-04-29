@@ -1,7 +1,7 @@
 from typing import List
 import psycopg
 from psycopg.rows import TupleRow
-from database_utils import DatabaseUtils
+from src.database_utils import DatabaseUtils
 
 class SQLExecutor:
     def __init__(self, db_utils: DatabaseUtils):

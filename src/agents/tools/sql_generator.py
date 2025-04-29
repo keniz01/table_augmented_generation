@@ -1,5 +1,5 @@
-from llm_models.instruction_model import InstructionModel
-from sql_format_helper import SQLFormatHelper
+from src.llm_models.instruction_model import InstructionModel
+from src.sql_format_helper import SQLFormatHelper
 
 class SQLGenerator:
     

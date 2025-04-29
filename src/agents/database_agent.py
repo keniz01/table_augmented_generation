@@ -1,14 +1,14 @@
 
 from typing import Dict, List
-from agents.tools.sql_executor import SQLExecutor
-from agents.tools.sql_generator import SQLGenerator
-from agents.tools.table_schema_retriever import TableSchemaRetriever
-from agents.tools.text_summariser import TextSummariser
-from database_utils import DatabaseUtils
-from llm_models.embedding_model import EmbeddingModel
-from llm_models.instruction_model import InstructionModel
-from prompts.sql_prompt import SQLPrompt
-from prompts.text_summariser_prompt import TextSummariserPrompt
+from src.agents.tools.sql_executor import SQLExecutor
+from src.agents.tools.sql_generator import SQLGenerator
+from src.agents.tools.table_schema_retriever import TableSchemaRetriever
+from src.agents.tools.text_summariser import TextSummariser
+from src.database_utils import DatabaseUtils
+from src.llm_models.embedding_model import EmbeddingModel
+from src.llm_models.instruction_model import InstructionModel
+from src.prompts.sql_prompt import SQLPrompt
+from src.prompts.text_summariser_prompt import TextSummariserPrompt
 
 
 class DatabaseAgent:

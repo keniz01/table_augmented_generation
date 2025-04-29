@@ -1,4 +1,4 @@
-from prompts.prompt_abstract import PromptAbstract
+from src.prompts.prompt_abstract import PromptAbstract
       
 class SQLPrompt(PromptAbstract):
 

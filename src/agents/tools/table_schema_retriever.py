@@ -1,7 +1,7 @@
 from typing import Dict, List
 import psycopg
-from database_utils import DatabaseUtils
-from llm_models.embedding_model import EmbeddingModel
+from src.database_utils import DatabaseUtils
+from src.llm_models.embedding_model import EmbeddingModel
 
 class TableSchemaRetriever:
 

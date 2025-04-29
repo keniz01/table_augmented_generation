@@ -1,8 +1,8 @@
 from time import localtime, strftime
-from agents.database_agent import DatabaseAgent
-from database_utils import DatabaseUtils
-from llm_models.instruction_model import InstructionModel
-from llm_models.embedding_model import EmbeddingModel
+from src.agents.database_agent import DatabaseAgent
+from src.database_utils import DatabaseUtils
+from src.llm_models.instruction_model import InstructionModel
+from src.llm_models.embedding_model import EmbeddingModel
 
 llm_model=InstructionModel()
 db_utils=DatabaseUtils()
