@@ -1,7 +1,7 @@
 from os import path
 from llama_cpp import LLAMA_POOLING_TYPE_LAST, Llama
 
-class TextEmbeddingModel(): 
+class EmbeddingModel(): 
        
     def __init__(self):
         model_path=path.abspath(path.join(__file__ ,"../../../.."))

@@ -1,6 +1,6 @@
 from llama_cpp import Llama
 
-class TextSummariserAgent():
+class TextSummariser:
 
     def __init__(self, llm_model: Llama):
         self.__llm_model=llm_model

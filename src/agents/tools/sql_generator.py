@@ -1,7 +1,7 @@
 from llm_models.instruction_model import InstructionModel
 from sql_format_helper import SQLFormatHelper
 
-class SQLGeneratorAgent():
+class SQLGenerator:
     
     def __init__(self, llm_model: InstructionModel):
         self.__llm_model=llm_model

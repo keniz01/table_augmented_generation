@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer
 from sqlalchemy.orm import DeclarativeBase
 from pgvector.sqlalchemy import Vector
 from sqlalchemy.dialects.postgresql import JSONB
