@@ -12,7 +12,7 @@ if __name__ == "__main__":
     try:
         start_time=strftime("%H:%M:%S", localtime())
         agent=DatabaseAgent(llm_model,embedding_model,db_utils)
-        response=agent.invoke('List the top 10 tracks by Sizzla')
+        response=agent.invoke('List the top 5 tracks by Sizzla')
         end_time=strftime("%H:%M:%S", localtime())
         print(f"Response Time: {start_time} to {end_time}")
         print(response)
