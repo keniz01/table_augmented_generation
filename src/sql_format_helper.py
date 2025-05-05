@@ -45,7 +45,6 @@ class SQLFormatHelper():
 
     def format_sql(self) -> str:
 
-        print(f'SQL =========== {self.sql}')
         self.sql=self.__remove_spaces() \
             .__extract_from_back_ticks() \
             .__remove_wild_cards() \
@@ -53,8 +52,6 @@ class SQLFormatHelper():
             .__replace_equals_with_in_in_where_clause() \
             .sql
                     
-        
-        print(f'SQL =========== {self.sql}')
         if not self.__is_safe_select_query():
             raise Exception("Invalid SQL query: Only valid SELECT statements are allowed.")
 
