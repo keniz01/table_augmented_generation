@@ -7,12 +7,12 @@ class TextSummariserPrompt(PromptAbstract):
 
     def generate_prompt(self, context: str, question: str) -> str:
         
-        prompt=f"""<|system|>You are a helpful assistant.<|end|>
+        prompt=f"""<|system|>You are a concise assistant. Respond only with the summarized result based strictly on the given context.<|end|>
 <|user|>{question}<|end|>
 <|assistant|>
 Context: {context}
 <|end|>
-<|user|>You must summarize the values in the context regardless of the question. Do not explain, advice or assume.<|end|>
+<|user|>Assume the question always matches the context. Your task is to summarize the value(s) from the context without explanation or reasoning.<|end|>
 <|assistant|>"""
 
         return prompt

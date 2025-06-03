@@ -6,10 +6,14 @@ class SQLPrompt(PromptAbstract):
         super().__init__()
 
     def generate_prompt(self, context:str, question: str) -> str:
-        return f"""<|system|>You must use the context to generate a correct Postgres SQL statement to answer the question at the end.
-Strictly only use table and column names defined in the context and you must use table and column aliases.
-If the question does not make sense or you dont know the answer just say "I dont know".
-You must only return valid SQL - do not explain, advice or assume.<|end|>
+        return f"""<|system|>You are an expert SQL generator. Use the provided context to write a valid PostgreSQL SQL statement that directly answers the user’s question.
+
+**Strict Rules:**
+- Use only table and column names exactly as defined in the context.
+- Always use table and column aliases.
+- The output must be valid PostgreSQL SQL syntax.
+- Do NOT include explanations, assumptions, or reasoning in the response.
+- If the question cannot be answered using the context, reply exactly: I don't know.<|end|>
 <|user|>
 Count albums distributed by record label 'Greenesleeves'<|end|>
 <|assistant|>
@@ -20,8 +24,10 @@ where rl.label_name ILIKE 'Greensleeves Records';<|end|>
 <|user|>
 How many albums does the recording artist 'Gregory Isaacs' have?<|end|>
 <|assistant|>
-SELECT COUNT(al.*) 
-FROM album al;<|end|>
+SELECT COUNT(DISTINCT(al.title)) 
+FROM album al 
+INNER JOIN recording_artist ra ON al.artist_id = ra.artist_id 
+WHERE ra.artist_name ILIKE 'Gregory Isaacs';<|end|>
 <|user|>
 Show all tracks on the album 'Soca Xplosion 2007' have?<|end|>
 <|assistant|>
